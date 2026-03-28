@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StayHub - Hotel Booking App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- HOME PAGE -->
+    <div id="home-page" class="page active">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-square"></i>
+                    <span>StayHub</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" onclick="showPage('home-page')">Explore Hotels</a>
+                    <a href="#" class="heart-icon"><i class="fas fa-heart"></i> Wishlist</a>
+                    <div class="currency-select">
+                        <i class="fas fa-globe"></i> USD
+                    </div>
+                    <button class="sign-in-btn" onclick="showPage('home-page')">Sign In</button>
+                    <button class="sign-up-btn" onclick="alert('Sign up functionality')">Sign Up</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1>Find Your Perfect Stay</h1>
+                <p>Book unique homes, hotels, and experiences around the world</p>
+            </div>
+            <div class="search-card">
+                <div class="search-group">
+                    <label>Destination</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" id="destination" placeholder="Where are you going?" value="Paris">
+                    </div>
+                </div>
+                <div class="search-group">
+                    <label>Check-in</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calendar"></i>
+                        <input type="text" id="checkin" placeholder="mm/dd/yyyy" value="03/30/2026">
+                    </div>
+                </div>
+                <div class="search-group">
+                    <label>Check-out</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calendar"></i>
+                        <input type="text" id="checkout" placeholder="mm/dd/yyyy" value="04/03/2026">
+                    </div>
+                </div>
+                <div class="search-group">
+                    <label>Guests</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-users"></i>
+                        <input type="text" id="guests" placeholder="Number of guests" value="2 Guests" readonly>
+                    </div>
+                </div>
+                <button class="search-btn" onclick="searchHotels()">
+                    <i class="fas fa-search"></i> Search Hotels
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOTELS LIST PAGE -->
+    <div id="hotels-page" class="page">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-square"></i>
+                    <span>StayHub</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" onclick="showPage('home-page')">Explore Hotels</a>
+                    <a href="#" class="heart-icon"><i class="fas fa-heart"></i> Wishlist</a>
+                    <div class="currency-select">
+                        <i class="fas fa-globe"></i> USD
+                    </div>
+                    <button class="sign-in-btn" onclick="alert('Sign in functionality')">Sign In</button>
+                    <button class="sign-up-btn" onclick="alert('Sign up functionality')">Sign Up</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container hotels-container">
+            <h2>Hotels in <span id="location-display">Paris</span></h2>
+            <p class="hotel-count">234 properties found</p>
+
+            <div class="hotels-layout">
+                <!-- FILTERS SIDEBAR -->
+                <aside class="filters-sidebar">
+                    <div class="filters-header">
+                        <i class="fas fa-sliders-h"></i>
+                        <span>Filters</span>
+                    </div>
+
+                    <div class="filter-section">
+                        <h4>Filter by</h4>
+                    </div>
+
+                    <div class="filter-section">
+                        <h4>Price Range</h4>
+                        <div class="price-slider">
+                            <input type="range" min="0" max="500" value="0" id="priceMin" onchange="updatePriceRange()">
+                            <input type="range" min="0" max="500" value="500" id="priceMax" onchange="updatePriceRange()">
+                        </div>
+                        <div class="price-range">
+                            <span>$<span id="minPrice">0</span></span>
+                            <span>$<span id="maxPrice">500</span>+</span>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h4>Star Rating</h4>
+                        <div class="rating-filter">
+                            <label><input type="checkbox"> 5 Stars</label>
+                            <label><input type="checkbox"> 4 Stars</label>
+                            <label><input type="checkbox"> 3 Stars</label>
+                            <label><input type="checkbox"> 2 Stars</label>
+                            <label><input type="checkbox"> 1 Stars</label>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h4>Amenities</h4>
+                        <div class="amenities-filter">
+                            <label><input type="checkbox"> WiFi</label>
+                            <label><input type="checkbox"> Pool</label>
+                            <label><input type="checkbox"> Gym</label>
+                            <label><input type="checkbox"> Restaurant</label>
+                            <label><input type="checkbox"> Parking</label>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- MAIN CONTENT -->
+                <main class="hotels-main">
+                    <div class="hotels-toolbar">
+                        <button class="filter-btn"><i class="fas fa-sliders-h"></i> Filters</button>
+                        <button class="view-btn"><i class="fas fa-list"></i></button>
+                        <button class="view-btn active"><i class="fas fa-map"></i> Map View</button>
+                    </div>
+
+                    <div class="hotels-grid">
+                        <!-- HOTEL CARD 1 -->
+                        <div class="hotel-card">
+                            <div class="hotel-image">
+                                <div class="hotel-image-carousel" style="transform: translateX(0%)">
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=500&h=350&fit=crop" alt="Grand Luxury Resort 1"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1595521624347-dde642412e91?w=500&h=350&fit=crop" alt="Grand Luxury Resort 2"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=500&h=350&fit=crop" alt="Grand Luxury Resort 3"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1584132604420-eb50d0d7269f?w=500&h=350&fit=crop" alt="Grand Luxury Resort 4"></div>
+                                </div>
+                                <button class="photo-nav-btn prev" onclick="prevPhoto(event)"><i class="fas fa-chevron-left"></i></button>
+                                <button class="photo-nav-btn next" onclick="nextPhoto(event)"><i class="fas fa-chevron-right"></i></button>
+                                <div class="photo-nav">
+                                    <span class="photo-dot active" onclick="goToPhoto(event, 0)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 1)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 2)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 3)"></span>
+                                </div>
+                                <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+                                <div class="rating-badge">9.2</div>
+                            </div>
+                            <div class="hotel-info">
+                                <h3>Grand Luxury Resort & Spa</h3>
+                                <p class="location"><i class="fas fa-map-marker-alt"></i> Paris, France <strong>2.3 km from center</strong></p>
+                                <div class="rating">
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                    <span class="rating-text">Excellent</span>
+                                    <span class="reviews">(1543 reviews)</span>
+                                </div>
+                                <div class="hotel-footer">
+                                    <div class="price-info">
+                                        <span class="label">Starting from</span>
+                                        <span class="price">$289</span>
+                                        <span class="per-night">per night</span>
+                                    </div>
+                                    <button class="book-btn" onclick="goToBooking('Grand Luxury Resort & Spa', 289, 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=500&h=400&fit=crop')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HOTEL CARD 2 -->
+                        <div class="hotel-card">
+                            <div class="hotel-image">
+                                <div class="hotel-image-carousel" style="transform: translateX(0%)">
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1570129477492-45b003d3b2b6?w=500&h=350&fit=crop" alt="Seaside Paradise 1"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&h=350&fit=crop" alt="Seaside Paradise 2"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&h=350&fit=crop" alt="Seaside Paradise 3"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1514632595-446ab80f5b1f?w=500&h=350&fit=crop" alt="Seaside Paradise 4"></div>
+                                </div>
+                                <button class="photo-nav-btn prev" onclick="prevPhoto(event)"><i class="fas fa-chevron-left"></i></button>
+                                <button class="photo-nav-btn next" onclick="nextPhoto(event)"><i class="fas fa-chevron-right"></i></button>
+                                <div class="photo-nav">
+                                    <span class="photo-dot active" onclick="goToPhoto(event, 0)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 1)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 2)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 3)"></span>
+                                </div>
+                                <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+                                <div class="rating-badge">9.5</div>
+                            </div>
+                            <div class="hotel-info">
+                                <h3>Seaside Paradise Hotel</h3>
+                                <p class="location"><i class="fas fa-map-marker-alt"></i> Bali, Indonesia <strong>1.5 km from center</strong></p>
+                                <div class="rating">
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                    <span class="rating-text">Excellent</span>
+                                    <span class="reviews">(2134 reviews)</span>
+                                </div>
+                                <div class="hotel-footer">
+                                    <div class="price-info">
+                                        <span class="label">Starting from</span>
+                                        <span class="price">$199</span>
+                                        <span class="per-night">per night</span>
+                                    </div>
+                                    <button class="book-btn" onclick="goToBooking('Seaside Paradise Hotel', 199, 'https://images.unsplash.com/photo-1570129477492-45b003d3b2b6?w=500&h=400&fit=crop')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HOTEL CARD 3 -->
+                        <div class="hotel-card">
+                            <div class="hotel-image">
+                                <div class="hotel-image-carousel" style="transform: translateX(0%)">
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=500&h=350&fit=crop" alt="Mountain View 1"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=350&fit=crop" alt="Mountain View 2"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=500&h=350&fit=crop" alt="Mountain View 3"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1551874177-efb3dfa63d96?w=500&h=350&fit=crop" alt="Mountain View 4"></div>
+                                </div>
+                                <button class="photo-nav-btn prev" onclick="prevPhoto(event)"><i class="fas fa-chevron-left"></i></button>
+                                <button class="photo-nav-btn next" onclick="nextPhoto(event)"><i class="fas fa-chevron-right"></i></button>
+                                <div class="photo-nav">
+                                    <span class="photo-dot active" onclick="goToPhoto(event, 0)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 1)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 2)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 3)"></span>
+                                </div>
+                                <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+                                <div class="rating-badge">8.8</div>
+                            </div>
+                            <div class="hotel-info">
+                                <h3>Mountain View Resort</h3>
+                                <p class="location"><i class="fas fa-map-marker-alt"></i> Swiss Alps, Switzerland <strong>3.2 km from center</strong></p>
+                                <div class="rating">
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </span>
+                                    <span class="rating-text">Very Good</span>
+                                    <span class="reviews">(892 reviews)</span>
+                                </div>
+                                <div class="hotel-footer">
+                                    <div class="price-info">
+                                        <span class="label">Starting from</span>
+                                        <span class="price">$349</span>
+                                        <span class="per-night">per night</span>
+                                    </div>
+                                    <button class="book-btn" onclick="goToBooking('Mountain View Resort', 349, 'https://images.unsplash.com/photo-1517457373614-b7152f800fd1?w=500&h=400&fit=crop')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HOTEL CARD 4 -->
+                        <div class="hotel-card">
+                            <div class="hotel-image">
+                                <div class="hotel-image-carousel" style="transform: translateX(0%)">
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=500&h=350&fit=crop" alt="Urban Modern 1"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1559293615-cd4628902246?w=500&h=350&fit=crop" alt="Urban Modern 2"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1535221228889-6e44e7482bdf?w=500&h=350&fit=crop" alt="Urban Modern 3"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=500&h=350&fit=crop" alt="Urban Modern 4"></div>
+                                </div>
+                                <button class="photo-nav-btn prev" onclick="prevPhoto(event)"><i class="fas fa-chevron-left"></i></button>
+                                <button class="photo-nav-btn next" onclick="nextPhoto(event)"><i class="fas fa-chevron-right"></i></button>
+                                <div class="photo-nav">
+                                    <span class="photo-dot active" onclick="goToPhoto(event, 0)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 1)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 2)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 3)"></span>
+                                </div>
+                                <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+                                <div class="rating-badge">9.1</div>
+                            </div>
+                            <div class="hotel-info">
+                                <h3>Urban Modern Hotel</h3>
+                                <p class="location"><i class="fas fa-map-marker-alt"></i> New York, USA <strong>2.0 km from center</strong></p>
+                                <div class="rating">
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                    <span class="rating-text">Excellent</span>
+                                    <span class="reviews">(1834 reviews)</span>
+                                </div>
+                                <div class="hotel-footer">
+                                    <div class="price-info">
+                                        <span class="label">Starting from</span>
+                                        <span class="price">$379</span>
+                                        <span class="per-night">per night</span>
+                                    </div>
+                                    <button class="book-btn" onclick="goToBooking('Urban Modern Hotel', 379, 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=500&h=400&fit=crop')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HOTEL CARD 5 -->
+                        <div class="hotel-card">
+                            <div class="hotel-image">
+                                <div class="hotel-image-carousel" style="transform: translateX(0%)">
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&h=350&fit=crop" alt="Coastal Retreat 1"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=500&h=350&fit=crop" alt="Coastal Retreat 2"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=350&fit=crop" alt="Coastal Retreat 3"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500&h=350&fit=crop" alt="Coastal Retreat 4"></div>
+                                </div>
+                                <button class="photo-nav-btn prev" onclick="prevPhoto(event)"><i class="fas fa-chevron-left"></i></button>
+                                <button class="photo-nav-btn next" onclick="nextPhoto(event)"><i class="fas fa-chevron-right"></i></button>
+                                <div class="photo-nav">
+                                    <span class="photo-dot active" onclick="goToPhoto(event, 0)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 1)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 2)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 3)"></span>
+                                </div>
+                                <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+                                <div class="rating-badge">8.9</div>
+                            </div>
+                            <div class="hotel-info">
+                                <h3>Coastal Retreat</h3>
+                                <p class="location"><i class="fas fa-map-marker-alt"></i> Santorini, Greece <strong>1.8 km from center</strong></p>
+                                <div class="rating">
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </span>
+                                    <span class="rating-text">Excellent</span>
+                                    <span class="reviews">(1621 reviews)</span>
+                                </div>
+                                <div class="hotel-footer">
+                                    <div class="price-info">
+                                        <span class="label">Starting from</span>
+                                        <span class="price">$259</span>
+                                        <span class="per-night">per night</span>
+                                    </div>
+                                    <button class="book-btn" onclick="goToBooking('Coastal Retreat', 259, 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&h=400&fit=crop')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- HOTEL CARD 6 -->
+                        <div class="hotel-card">
+                            <div class="hotel-image">
+                                <div class="hotel-image-carousel" style="transform: translateX(0%)">
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1566162537367-2dc02aa51860?w=500&h=350&fit=crop" alt="Desert Oasis 1"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1572177812156-58036aae439c?w=500&h=350&fit=crop" alt="Desert Oasis 2"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1502084077566-8e9cffb2c0e0?w=500&h=350&fit=crop" alt="Desert Oasis 3"></div>
+                                    <div class="hotel-image-item"><img src="https://images.unsplash.com/photo-1433838552652-f9a46b332c40?w=500&h=350&fit=crop" alt="Desert Oasis 4"></div>
+                                </div>
+                                <button class="photo-nav-btn prev" onclick="prevPhoto(event)"><i class="fas fa-chevron-left"></i></button>
+                                <button class="photo-nav-btn next" onclick="nextPhoto(event)"><i class="fas fa-chevron-right"></i></button>
+                                <div class="photo-nav">
+                                    <span class="photo-dot active" onclick="goToPhoto(event, 0)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 1)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 2)"></span>
+                                    <span class="photo-dot" onclick="goToPhoto(event, 3)"></span>
+                                </div>
+                                <button class="wishlist-btn"><i class="far fa-heart"></i></button>
+                                <div class="rating-badge">8.7</div>
+                            </div>
+                            <div class="hotel-info">
+                                <h3>Desert Oasis Resort</h3>
+                                <p class="location"><i class="fas fa-map-marker-alt"></i> Dubai, UAE <strong>2.7 km from center</strong></p>
+                                <div class="rating">
+                                    <span class="stars">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="far fa-star"></i>
+                                    </span>
+                                    <span class="rating-text">Very Good</span>
+                                    <span class="reviews">(1456 reviews)</span>
+                                </div>
+                                <div class="hotel-footer">
+                                    <div class="price-info">
+                                        <span class="label">Starting from</span>
+                                        <span class="price">$229</span>
+                                        <span class="per-night">per night</span>
+                                    </div>
+                                    <button class="book-btn" onclick="goToBooking('Desert Oasis Resort', 229, 'https://images.unsplash.com/photo-1566162537367-2dc02aa51860?w=500&h=400&fit=crop')">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOKING PAGE -->
+    <div id="booking-page" class="page">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-square"></i>
+                    <span>StayHub</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" onclick="showPage('home-page')">Explore Hotels</a>
+                    <a href="#" class="heart-icon"><i class="fas fa-heart"></i> Wishlist</a>
+                    <div class="currency-select">
+                        <i class="fas fa-globe"></i> USD
+                    </div>
+                    <button class="sign-in-btn" onclick="alert('Sign in functionality')">Sign In</button>
+                    <button class="sign-up-btn" onclick="alert('Sign up functionality')">Sign Up</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container booking-container">
+            <h2>Complete Your Booking</h2>
+            
+            <div class="booking-layout">
+                <!-- LEFT SIDE - FORM -->
+                <div class="booking-form">
+                    <!-- GUEST DETAILS -->
+                    <section class="form-section">
+                        <h3>Guest Details</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name <span class="required">*</span></label>
+                                <input type="text" id="firstName" placeholder="John">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name <span class="required">*</span></label>
+                                <input type="text" id="lastName" placeholder="Doe">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="required">*</span></label>
+                            <input type="email" id="email" placeholder="john.doe@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number <span class="required">*</span></label>
+                            <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div class="form-group">
+                            <label for="requests">Special Requests (Optional)</label>
+                            <textarea id="requests" rows="4" placeholder="Any special requirements or requests..."></textarea>
+                        </div>
+                    </section>
+
+                    <!-- ROOM SELECTION -->
+                    <section class="form-section">
+                        <h3>Room Selection</h3>
+                        <div class="room-options">
+                            <div class="room-option selected">
+                                <input type="radio" name="room" value="deluxe" checked>
+                                <div class="room-content">
+                                    <strong>Deluxe Room</strong>
+                                    <span class="room-price">$289/night</span>
+                                </div>
+                            </div>
+                            <div class="room-option">
+                                <input type="radio" name="room" value="executive">
+                                <div class="room-content">
+                                    <strong>Executive Suite</strong>
+                                    <span class="room-price">$459/night</span>
+                                </div>
+                            </div>
+                            <div class="room-option">
+                                <input type="radio" name="room" value="presidential">
+                                <div class="room-content">
+                                    <strong>Presidential Suite</strong>
+                                    <span class="room-price">$899/night</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- PAYMENT INFORMATION -->
+                    <section class="form-section">
+                        <h3><i class="fas fa-lock"></i> Payment Information</h3>
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number <span class="required">*</span></label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry">Expiry Date <span class="required">*</span></label>
+                                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV <span class="required">*</span></label>
+                                <input type="text" id="cvv" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardName">Cardholder Name <span class="required">*</span></label>
+                            <input type="text" id="cardName" placeholder="John Doe">
+                        </div>
+                        <div class="form-checkbox">
+                            <input type="checkbox" id="terms" checked>
+                            <label for="terms">I agree to the <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a></label>
+                        </div>
+                    </section>
+
+                    <button class="complete-booking-btn" onclick="completeBooking()">Complete Booking</button>
+                </div>
+
+                <!-- RIGHT SIDE - SUMMARY -->
+                <aside class="booking-summary">
+                    <div class="summary-image">
+                        <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=500&h=400&fit=crop" id="summary-hotel-image" alt="Hotel">
+                    </div>
+                    <div class="summary-content">
+                        <h4 id="hotel-name-summary">Grand Luxury Resort & Spa</h4>
+                        <p id="hotel-location-summary" class="location-summary">Paris, France</p>
+
+                        <div class="summary-item">
+                            <i class="fas fa-calendar"></i>
+                            <div>
+                                <span class="label">Check-in</span>
+                                <span class="value">March 30, 2026</span>
+                            </div>
+                        </div>
+
+                        <div class="summary-item">
+                            <i class="fas fa-calendar"></i>
+                            <div>
+                                <span class="label">Check-out</span>
+                                <span class="value">April 3, 2026</span>
+                            </div>
+                        </div>
+
+                        <div class="summary-item">
+                            <i class="fas fa-users"></i>
+                            <div>
+                                <span class="label">Guests</span>
+                                <span class="value">2 Adults</span>
+                            </div>
+                        </div>
+
+                        <div class="price-breakdown">
+                            <div class="price-row">
+                                <span>$289 x 4 nights</span>
+                                <span id="subtotal">$1,156</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Service fee</span>
+                                <span>$58</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Taxes</span>
+                                <span>$139</span>
+                            </div>
+                        </div>
+
+                        <div class="total-amount">
+                            <span>Total</span>
+                            <span id="total-amount">$1,353</span>
+                        </div>
+
+                        <div class="cancellation-info">
+                            <h5>Free cancellation</h5>
+                            <p>Cancel before March 27 for a full refund</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION PAGE -->
+    <div id="confirmation-page" class="page">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-square"></i>
+                    <span>StayHub</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" onclick="showPage('home-page')">Explore Hotels</a>
+                    <a href="#" class="heart-icon"><i class="fas fa-heart"></i> Wishlist</a>
+                    <div class="currency-select">
+                        <i class="fas fa-globe"></i> USD
+                    </div>
+                    <button class="sign-in-btn" onclick="alert('Sign in functionality')">Sign In</button>
+                    <button class="sign-up-btn" onclick="alert('Sign up functionality')">Sign Up</button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="confirmation-container">
+            <div class="confirmation-content">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1>Booking Confirmed!</h1>
+                <p>Your reservation has been successfully completed. A confirmation email has been sent to your email address with all the booking details.</p>
+
+                <div class="confirmation-details">
+                    <div class="detail-row">
+                        <span class="label">Booking ID</span>
+                        <span class="value" id="booking-id">BK-LIWP8F0YK</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Hotel</span>
+                        <span class="value" id="confirm-hotel-name">Grand Luxury Resort & Spa</span>
+                    </div>
+                </div>
+
+                <div class="confirmation-dates">
+                    <div class="date-group">
+                        <span class="label">Check-in</span>
+                        <span class="date">March 30, 2026</span>
+                    </div>
+                    <div class="date-group">
+                        <span class="label">Check-out</span>
+                        <span class="date">April 3, 2026</span>
+                    </div>
+                </div>
+
+                <div class="confirmation-actions">
+                    <button class="return-btn" onclick="showPage('home-page')">Return Home</button>
+                    <button class="details-btn">View Booking Details</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
