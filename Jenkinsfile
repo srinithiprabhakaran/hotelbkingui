@@ -3,7 +3,7 @@ pipeline{
     stages{
         stage("Checkout code"){
             steps{
-                git "https://github.com/srinithiprabhakaran/hotelbkingui/git"
+                git "https://github.com/srinithiprabhakaran/hotelbkingui.git"
             }
         }
         stage("Build"){
